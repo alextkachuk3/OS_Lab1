@@ -1,5 +1,6 @@
 #pragma once
 
+#include "stdio.h"
 #include <Windows.h>
 
 #define BUFSIZE 512
@@ -12,6 +13,6 @@ HANDLE ghandle_named_pipe;
 
 void InitServerNamedPipes();
 
-void InitNamedPipe(HANDLE handle_named_pipe, LPCTSTR PIPE_NAME);
+int InitNamedPipe(HANDLE* handle_named_pipe, LPCTSTR PIPE_NAME);
 
 void CloseServerPipes();

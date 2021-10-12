@@ -3,7 +3,7 @@
 
 int main(int argc, char agrv[])
 {
-	printf("Hello, World!");
+	printf("Hello, Server!");
 	InitServerNamedPipes();
 	CloseServerPipes();
 	return 0;
