@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{b8daf626-d2f5-46af-875a-31ae536f9b65}</ProjectGuid>
-    <RootNamespace>OSLab1</RootNamespace>
+    <ProjectGuid>{4d6a5547-36e4-4cb9-b7f8-929c2343d715}</ProjectGuid>
+    <RootNamespace>ClientG</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -140,10 +140,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.c" />
-    <ClCompile Include="server_pipe.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="server_pipe.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
