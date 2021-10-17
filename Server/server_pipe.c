@@ -15,19 +15,43 @@ int InitNamedPipe(HANDLE* handle_named_pipe, LPCTSTR PIPE_NAME)
         NULL);
     if (*handle_named_pipe == INVALID_HANDLE_VALUE)
     {
-        printf(TEXT("CreateNamedPipe failed, GLE=%d.\n"), GetLastError());
+        printf("CreateNamedPipe failed, GLE=%d.\n", GetLastError());
         return -1;
     }
 }
 
+int InitPipeHandler(HANDLE* handle_named_pipe)
+{
+    BOOL connected = FALSE;
+
+    connected = ConnectNamedPipe(handle_named_pipe, NULL) ?
+        TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
+
+    if (connected)
+    {
+        printf("Client connected, creating a processing thread.\n");
+                
+        
+        return 0;
+    }
+
+    return -1;
+}
+
 void InitServerNamedPipes()
 {
-    InitNamedPipe(&fhandle_named_pipe, FPIPE_NAME);
-    InitNamedPipe(&ghandle_named_pipe, GPIPE_NAME);
+    f_pipe_data = (PPIPEDATA)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
+        sizeof(PIPEDATA));
+    g_pipe_data = (PPIPEDATA)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
+        sizeof(PIPEDATA));
+    InitNamedPipe(&f_pipe_data->pipe_handle, FPIPE_NAME);
+    InitNamedPipe(&g_pipe_data->pipe_handle, GPIPE_NAME);
 }
 
 void CloseServerPipes()
 {
-    CloseHandle(fhandle_named_pipe);
-    CloseHandle(ghandle_named_pipe);
+    CloseHandle(f_pipe_data->pipe_handle);
+    CloseHandle(g_pipe_data->pipe_handle);
+    HeapFree(GetProcessHeap(), 0, f_pipe_data);
+    HeapFree(GetProcessHeap(), 0, g_pipe_data);
 }
