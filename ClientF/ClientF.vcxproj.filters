@@ -18,12 +18,21 @@
     <ClInclude Include="..\pipe_client.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\compfuncs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\trialfuncs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\pipe_client.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\trialfuncs.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

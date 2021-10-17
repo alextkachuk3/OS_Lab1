@@ -1,7 +1,7 @@
-
 #include <Windows.h>
 
 #include "../pipe_client.h"
+#include "../trialfuncs.h"
 
 #define f_pipe_name TEXT("\\\\.\\pipe\\fnamedpipe")
 
