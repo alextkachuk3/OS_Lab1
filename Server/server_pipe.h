@@ -1,6 +1,8 @@
 #pragma once
 
-#include "stdio.h"
+#include <stdio.h>
+#include <tchar.h>
+#include <strsafe.h>
 #include <Windows.h>
 
 #define BUFSIZE 512
@@ -25,10 +27,20 @@ typedef struct PipeData {
 PPIPEDATA f_pipe_data;
 PPIPEDATA g_pipe_data;
 
+DWORD f_thread_id;
+DWORD g_thread_id;
+
+HANDLE f_thread_handle;
+HANDLE g_thread_handle;
+
 void InitServerNamedPipes();
 
 int InitNamedPipe(HANDLE* handle_named_pipe, LPCTSTR PIPE_NAME);
 
-int InitPipeHandler(HANDLE* handle_named_pipe);
+int InitPipeHandler(PPIPEDATA pipe_data, HANDLE* thread_handle, DWORD* thread_id);
+
+int InitPipesHandlers();
+
+DWORD WINAPI PipeInstanceThread(LPVOID param);
 
 void CloseServerPipes();

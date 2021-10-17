@@ -3,8 +3,9 @@
 
 int main(int argc, char agrv[])
 {
-	printf("Hello, Server!");
-	InitServerNamedPipes();
+	printf("Hello, Server!\n");
+	InitServerNamedPipes();	
+	InitPipesHandlers();
 	CloseServerPipes();
 	return 0;
 }
