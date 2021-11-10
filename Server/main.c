@@ -2,10 +2,7 @@
 #include "server_pipe.h"
 
 #include "../trialfuncs.h"
-
-
-#define client_f TEXT("ClientF")
-
+#include "queue.h"
 
 char* getline() {
     char* line = malloc(100), * linep = line;
@@ -41,6 +38,10 @@ char* getline() {
 
 int main(int argc, char agrv[])
 {
+    PQUEUE q;
+    q = (PQUEUE*)malloc(sizeof(QUEUE));
+    init(q);
+
     STARTUPINFO gsi;
     PROCESS_INFORMATION gpi;
 
@@ -112,7 +113,9 @@ int main(int argc, char agrv[])
 
             int value = atoi(token);
 
-            int iresultf;
+            insert(q, value);
+
+            /*int iresultf;
             compfunc_status_t statusf;
             statusf = trial_f_imul(value, &iresultf);
             printf("f_imul(%d%s%s%s", value, ") : ", symbolic_status(statusf), "\n");
@@ -124,7 +127,7 @@ int main(int argc, char agrv[])
             status = trial_g_imul(value, &iresult);
             printf("f_imul(%d%s%s%s", value, ") : ", symbolic_status(status), "\n");
             if (status == COMPFUNC_SUCCESS)
-                printf("f_imul(1): %d\n", iresult);
+                printf("f_imul(1): %d\n", iresult);*/
         }
         else if (strcmp(token, exit_command) == 0)
         {
