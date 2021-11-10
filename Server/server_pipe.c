@@ -1,5 +1,7 @@
 #include "server_pipe.h"
 
+
+
 int InitNamedPipe(HANDLE* handle_named_pipe, LPCTSTR PIPE_NAME)
 {
     *handle_named_pipe = CreateNamedPipe(
@@ -82,6 +84,10 @@ int InitPipesHandlers(PSERVER_PIPE_DATA server_pipe_data)
         {
             if (f_pipe_data->status == hard_fail)
             {
+                while (!CheckInputRowIsEmpty())
+                {
+                    continue;
+                }
                 printf("%s%i%s", "f(", f_pipe_data->x, ") - hard-fail\n");
                 f_complete = 1;
             }
@@ -94,12 +100,20 @@ int InitPipesHandlers(PSERVER_PIPE_DATA server_pipe_data)
                 }
                 else
                 {
+                    while (!CheckInputRowIsEmpty())
+                    {
+                        continue;
+                    }
                     printf("%s%i%s", "f(", f_pipe_data->x, ") - hard-fail\n");
                     f_complete = 1;
                 }
             }
             else if (f_pipe_data->status == success)
             {
+                while (!CheckInputRowIsEmpty())
+                {
+                    continue;
+                }
                 printf("%s%i%s%i%s", "f(", f_pipe_data->x, ") = ", f_pipe_data->result, "\n");
                 f_complete = 1;
             }
@@ -109,6 +123,10 @@ int InitPipesHandlers(PSERVER_PIPE_DATA server_pipe_data)
         {
             if (g_pipe_data->status == hard_fail)
             {
+                while (!CheckInputRowIsEmpty())
+                {
+                    continue;
+                }
                 printf("%s%i%s", "g(", g_pipe_data->x, ") - hard-fail\n");
                 g_complete = 1;
             }
@@ -121,12 +139,20 @@ int InitPipesHandlers(PSERVER_PIPE_DATA server_pipe_data)
                 }
                 else
                 {
+                    while (!CheckInputRowIsEmpty())
+                    {
+                        continue;
+                    }
                     printf("%s%i%s", "g(", g_pipe_data->x, ") - hard-fail\n");
                     g_complete = 1;
                 }
             }
             else if (g_pipe_data->status == success)
             {
+                while (!CheckInputRowIsEmpty())
+                {
+                    continue;
+                }
                 printf("%s%i%s%i%s", "g(", g_pipe_data->x, ") = ", g_pipe_data->result, "\n");
                 g_complete = 1;
             }
@@ -137,10 +163,18 @@ int InitPipesHandlers(PSERVER_PIPE_DATA server_pipe_data)
     {
         if (f_complete == 0)
         {
+            while (!CheckInputRowIsEmpty())
+            {
+                continue;
+            }
             printf("%s%i%s", "f(", f_pipe_data->x, ") - calc out of time\n");
         }
         if (g_complete == 0)
         {
+            while (!CheckInputRowIsEmpty())
+            {
+                continue;
+            }
             printf("%s%i%s", "g(", f_pipe_data->x, ") - calc out of time\n");
         }
     }
@@ -384,4 +418,33 @@ DWORD __stdcall PipeInstanceThread(LPVOID param)
     HeapFree(hHeap, 0, pchReply);
 
     return (DWORD)0;
+}
+
+//util function to prevent meshing of input and output
+int CheckInputRowIsEmpty()
+{
+    HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbiInfo;
+    if (!GetConsoleScreenBufferInfo(hStdout, &csbiInfo))
+    {
+        printf("GetConsoleScreenBufferInfo (%d)\n", GetLastError());
+        return 0;
+    }
+    LPTSTR character = (LPTSTR*)malloc(sizeof(LPTSTR));
+    COORD c;
+    c.X = 0;
+    c.Y = csbiInfo.dwCursorPosition.Y;
+    DWORD r;
+    ReadConsoleOutputCharacter(hStdout, character, 1, c, &r);
+
+    if (*character == L' ')
+    {
+        free(character);
+        return 1;
+    }
+    else
+    {
+        free(character);
+        return 0;
+    }
 }

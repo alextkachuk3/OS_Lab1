@@ -51,8 +51,10 @@ int InitNamedPipe(HANDLE* handle_named_pipe, LPCTSTR PIPE_NAME);
 
 int InitPipeHandler(PPIPEDATA pipe_data, HANDLE* thread_handle, DWORD* thread_id);
 
-int InitPipesHandlers();
+int InitPipesHandlers(PSERVER_PIPE_DATA server_pipe_data);
 
 DWORD WINAPI PipeInstanceThread(LPVOID param);
 
 void CloseServerPipes();
+
+int CheckInputRowIsEmpty();
