@@ -5,10 +5,20 @@
 #include <strsafe.h>
 #include <Windows.h>
 
+#include "queue.h"
+
 #define BUFSIZE 512
 
 #define FPIPE_NAME TEXT("\\\\.\\pipe\\fnamedpipe")
 #define GPIPE_NAME TEXT("\\\\.\\pipe\\gnamedpipe")
+
+typedef struct server_pipe_data
+{
+    PQUEUE q;
+    int* run;
+    int* cancel;
+
+}SERVER_PIPE_DATA, * PSERVER_PIPE_DATA;
 
 enum STATUS
 {
@@ -32,6 +42,8 @@ DWORD g_thread_id;
 
 HANDLE f_thread_handle;
 HANDLE g_thread_handle;
+
+DWORD WINAPI InitPipeServer(LPVOID param);
 
 void InitServerNamedPipes();
 

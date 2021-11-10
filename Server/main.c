@@ -38,62 +38,40 @@ char* getline() {
 
 int main(int argc, char agrv[])
 {
-    PQUEUE q;
-    q = (PQUEUE*)malloc(sizeof(QUEUE));
+    int* run = (int*)malloc(sizeof(int));
+
+    *run = 1;
+
+    int* cancel = (int*)malloc(sizeof(int));
+
+    *cancel = 0;
+
+    PQUEUE q = (PQUEUE*)malloc(sizeof(QUEUE)); 
     init(q);
 
-    STARTUPINFO gsi;
-    PROCESS_INFORMATION gpi;
+    PSERVER_PIPE_DATA s_data;
+    s_data = (PSERVER_PIPE_DATA*)malloc(sizeof(SERVER_PIPE_DATA));
 
-    ZeroMemory(&gsi, sizeof(gsi));
-    gsi.cb = sizeof(gsi);
-    ZeroMemory(&gpi, sizeof(gpi));
+    s_data->q = q;
+    s_data->run = run;
+    s_data->cancel = cancel;
 
-    STARTUPINFO fsi;
-    PROCESS_INFORMATION fpi;
+    HANDLE pipe_server_thread_handle;
+    DWORD thread_id;
 
-    ZeroMemory(&fsi, sizeof(fsi));
-    fsi.cb = sizeof(fsi);
-    ZeroMemory(&fpi, sizeof(fpi));
+    pipe_server_thread_handle = CreateThread(
+        NULL,
+        0,
+        InitPipeServer,
+        (LPVOID)s_data,
+        0,
+        &thread_id);
 
-    TCHAR clientf_exec[] = TEXT("clientf");
-    TCHAR clientg_exec[] = TEXT("clientg");
-
-    if (!CreateProcess(
-        NULL,
-        clientg_exec,
-        NULL,
-        NULL,
-        TRUE,
-        CREATE_NEW_CONSOLE,
-        NULL,
-        NULL,
-        &gsi,
-        &gpi)
-        )
-    {
-        printf("CreateProcess failed (%d).\n", GetLastError());
-        return;
-    }
-
-    if (!CreateProcess(
-        NULL,
-        clientf_exec,
-        NULL,
-        NULL,
-        TRUE,
-        CREATE_NEW_CONSOLE,
-        NULL,
-        NULL,
-        &fsi,
-        &fpi)
-        )
-    {
-        printf("CreateProcess failed (%d).\n", GetLastError());
-        return;
-    }    
-
+    const char y_command[] = "y\n";
+    const char n_command[] = "n\n";
     const char calc_command[] = "calc";
+    const char cancel_command[] = "cancel\n";
+
     const char exit_command[] = "exit\n";    
 
     while (true)
@@ -114,30 +92,38 @@ int main(int argc, char agrv[])
             int value = atoi(token);
 
             insert(q, value);
-
-            /*int iresultf;
-            compfunc_status_t statusf;
-            statusf = trial_f_imul(value, &iresultf);
-            printf("f_imul(%d%s%s%s", value, ") : ", symbolic_status(statusf), "\n");
-            if (statusf == COMPFUNC_SUCCESS)
-                printf("f_imul(1): %d\n", iresultf);
-
-            int iresult;
-            compfunc_status_t status;
-            status = trial_g_imul(value, &iresult);
-            printf("f_imul(%d%s%s%s", value, ") : ", symbolic_status(status), "\n");
-            if (status == COMPFUNC_SUCCESS)
-                printf("f_imul(1): %d\n", iresult);*/
         }
         else if (strcmp(token, exit_command) == 0)
         {
-            TerminateProcess(fpi.hProcess, 0);
-            TerminateProcess(gpi.hProcess, 0);
-            CloseHandle(fpi.hProcess);
-            CloseHandle(fpi.hThread);
-            CloseHandle(gpi.hProcess);
-            CloseHandle(gpi.hThread);
+            if (s_data)
+            {
+                s_data->run = 0;
+            }
             return 0;
+        }
+        else if (strcmp(token, cancel_command) == 0)
+        {
+            while (1)
+            {
+                printf("Please confirm that computation shoud be stopped [y]es, stop/[n]ot yet\n");
+                char* confirm = getline();
+
+                if (strcmp(confirm, y_command) == 0)
+                {
+                    *cancel = 1;
+                    break;
+                }
+                else if (strcmp(confirm, n_command) == 0)
+                {
+                    break;
+                }
+                else
+                {
+                    printf("Type y or n\n");
+                }
+
+                free(confirm);
+            }
         }
         else
         {
@@ -145,9 +131,12 @@ int main(int argc, char agrv[])
         }
     }
 
+    WaitForSingleObject(pipe_server_thread_handle, INFINITE);
 	printf("Hello, Server!\n");
-	InitServerNamedPipes();	
-	InitPipesHandlers();
-	CloseServerPipes();
+
+    free(run);
+    free(cancel);
+    free(s_data);
+
 	return 0;
 }

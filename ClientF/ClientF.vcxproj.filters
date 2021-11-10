@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\pipe_client.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\compfuncs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -26,9 +23,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\pipe_client.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -140,11 +140,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\compfuncs.h" />
-    <ClInclude Include="..\pipe_client.h" />
     <ClInclude Include="..\trialfuncs.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\pipe_client.c" />
     <ClCompile Include="..\trialfuncs.c" />
     <ClCompile Include="main.c" />
   </ItemGroup>
