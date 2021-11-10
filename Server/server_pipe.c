@@ -62,6 +62,7 @@ void InitServerNamedPipes()
         sizeof(PIPEDATA));
     g_pipe_data = (PPIPEDATA)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
         sizeof(PIPEDATA));
+
     f_pipe_data->pipe_handle = INVALID_HANDLE_VALUE;
     g_pipe_data->pipe_handle = INVALID_HANDLE_VALUE;
 

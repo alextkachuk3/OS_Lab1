@@ -11,5 +11,6 @@ int main(int argc, char argv[])
 	HANDLE pipe_handle = NULL;
 	InitClientNamedPipe(&pipe_handle, f_pipe_name);
 	CloseHandle(pipe_handle);
+	getch();
 	return 0;
 }
